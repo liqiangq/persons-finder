@@ -118,6 +118,50 @@ The app starts on `http://localhost:8080`.
 ./gradlew test
 ```
 
+## Swagger / OpenAPI
+
+After starting the app, open:
+
+- Swagger UI: `http://localhost:8080/swagger-ui/index.html`
+- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+
+The Swagger docs include example request values for:
+
+- `POST /persons`
+- `PUT /persons/{id}/location`
+- `GET /persons/nearby`
+
+### Example flow in Swagger
+
+1. Run `POST /persons` with:
+
+```json
+{
+  "name": "John Doe",
+  "jobTitle": "Backend Engineer",
+  "hobbies": ["coffee roasting", "board games"],
+  "location": {
+    "latitude": -36.8485,
+    "longitude": 174.7633
+  }
+}
+```
+
+2. Run `PUT /persons/{id}/location` with:
+
+```json
+{
+  "latitude": -36.8490,
+  "longitude": 174.7640
+}
+```
+
+3. Run `GET /persons/nearby` with:
+
+- `lat = -36.8485`
+- `lon = 174.7633`
+- `radiusKm = 5`
+
 ## Deploy To Render
 
 This app is compatible with a Render `Web Service`.
