@@ -118,6 +118,42 @@ The app starts on `http://localhost:8080`.
 ./gradlew test
 ```
 
+## Deploy To Render
+
+This app is compatible with a Render `Web Service`.
+
+### Render settings
+
+- Environment: `Java`
+- Build Command: `./gradlew build`
+- Start Command: `./gradlew bootRun`
+
+The app is configured to bind to Render's `PORT` environment variable via:
+
+```properties
+server.port=${PORT:8080}
+```
+
+### Deploy steps
+
+1. Push this repo to GitHub.
+2. In Render, create `New` -> `Web Service`.
+3. Connect the GitHub repository.
+4. Set the build command to `./gradlew build`.
+5. Set the start command to `./gradlew bootRun`.
+6. Deploy.
+
+### Recommended improvement for Render
+
+`bootRun` works, but for production deployment it is usually better to run the built jar instead of the Gradle task.
+
+You can switch to:
+
+- Build Command: `./gradlew build`
+- Start Command: `java -jar build/libs/PersonsFinder-0.0.1-SNAPSHOT.jar`
+
+If you want, I can make that startup path more robust by configuring a stable jar name or adding a `render.yaml`.
+
 ## Known Design Tradeoffs
 
 - Storage is intentionally in-memory, so data is lost on restart.
