@@ -6,6 +6,7 @@ import com.persons.finder.infrastructure.ai.TemplatePersonBioService
 import com.persons.finder.infrastructure.repository.InMemoryPersonRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
 class PersonsServiceImplTest {
@@ -52,5 +53,30 @@ class PersonsServiceImplTest {
         val nearby = personsService.findNearby(-36.8485, 174.7633, 20.0)
 
         assertEquals(listOf(first.id, second.id), nearby.map { it.person.id })
+    }
+
+    @Test
+    fun `update location replaces stored coordinates`() {
+        val person = personsService.createPerson(
+            name = "Sam",
+            jobTitle = "Analyst",
+            hobbies = listOf("running"),
+            location = Location(-36.8485, 174.7633)
+        )
+
+        val updated = personsService.updateLocation(
+            id = person.id,
+            location = Location(-36.8500, 174.7650)
+        )
+
+        assertEquals(-36.8500, updated.location.latitude)
+        assertEquals(174.7650, updated.location.longitude)
+    }
+
+    @Test
+    fun `get by id throws when person does not exist`() {
+        assertThrows(PersonNotFoundException::class.java) {
+            personsService.getById(999L)
+        }
     }
 }

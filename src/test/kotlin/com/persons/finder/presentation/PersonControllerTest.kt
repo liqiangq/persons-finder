@@ -67,4 +67,45 @@ class PersonControllerTest {
             .andExpect(jsonPath("$.length()").value(1))
             .andExpect(jsonPath("$[0].name").value("John Doe"))
     }
+
+    @Test
+    fun `create person returns bad request for invalid coordinates`() {
+        mockMvc.perform(
+            post("/persons")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    {
+                      "name": "John Doe",
+                      "jobTitle": "Backend Engineer",
+                      "hobbies": ["coffee roasting"],
+                      "location": {
+                        "latitude": 120.0,
+                        "longitude": 174.7633
+                      }
+                    }
+                    """.trimIndent()
+                )
+        )
+            .andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.message").exists())
+    }
+
+    @Test
+    fun `update location returns not found for unknown person`() {
+        mockMvc.perform(
+            put("/persons/999/location")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    {
+                      "latitude": -36.8490,
+                      "longitude": 174.7640
+                    }
+                    """.trimIndent()
+                )
+        )
+            .andExpect(status().isNotFound)
+            .andExpect(jsonPath("$.message").value("Person with id 999 was not found"))
+    }
 }
