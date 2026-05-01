@@ -124,11 +124,11 @@ This app is compatible with a Render `Web Service`.
 
 ### Render settings
 
-- Environment: `Java`
-- Build Command: `./gradlew build`
-- Start Command: `./gradlew bootRun`
+- Service Type: `Web Service`
+- Runtime/Language: `Docker`
+- Dockerfile: `./Dockerfile`
 
-The app is configured to bind to Render's `PORT` environment variable via:
+The app binds to Render's `PORT` environment variable via:
 
 ```properties
 server.port=${PORT:8080}
@@ -139,20 +139,22 @@ server.port=${PORT:8080}
 1. Push this repo to GitHub.
 2. In Render, create `New` -> `Web Service`.
 3. Connect the GitHub repository.
-4. Set the build command to `./gradlew build`.
-5. Set the start command to `./gradlew bootRun`.
+4. Set the runtime/language to `Docker`.
+5. Leave build/start commands empty unless Render asks for Docker-specific overrides.
 6. Deploy.
 
-### Recommended improvement for Render
+### Why Docker is required
 
-`bootRun` works, but for production deployment it is usually better to run the built jar instead of the Gradle task.
+Render's native runtimes support Node.js/Bun, Python, Ruby, Go, Rust, and Elixir. Java/Kotlin apps should be deployed on Render as Docker-based services.
 
-You can switch to:
+### Local Docker check
 
-- Build Command: `./gradlew build`
-- Start Command: `java -jar build/libs/PersonsFinder-0.0.1-SNAPSHOT.jar`
+```bash
+docker build -t persons-finder .
+docker run -p 8080:10000 -e PORT=10000 persons-finder
+```
 
-If you want, I can make that startup path more robust by configuring a stable jar name or adding a `render.yaml`.
+Then open `http://localhost:8080/persons/nearby?lat=-36.8485&lon=174.7633&radiusKm=5`
 
 ## Known Design Tradeoffs
 
